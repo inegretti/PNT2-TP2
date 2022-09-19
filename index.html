@@ -15,31 +15,59 @@
 
 <div class="container-fluid mt-3" id="app">
     <input type="text" class="form-control" v-model="criterioDeBusqueda"
-        placeholder="Ingresar un criterio de busqueda...">
+        placeholder="Ingresar nombre y apellido...">
+    <br>
+    <input type="text" class="form-control" v-model="criterioDeBusqueda2"
+        placeholder="Ingrese dni...">
     <br>
     <div class="card-deck m-0">
         <div class="row">
+            <div v-show="!criterioDeBusqueda2 && criterioDeBusqueda"></div>
             <div class="col" v-for="persona in personasFiltradas">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
-                        <p class="card-text">dni {{persona.dni}}</p>
-                        <a href="#" class="card-link">{{persona.correo}}</a>
+                <div v-show="!criterioDeBusqueda2">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                            <p class="card-text">dni {{persona.dni}}</p>
+                            <a href="#" class="card-link">{{persona.correo}}</a>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <div v-show="criterioDeBusqueda2">
+            
+                <div class="col" v-for="persona in personasFiltradasXDni">
+                    <div v-show="criterioDeBusqueda2">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{getNombreCompleto(persona)}}</h5>
+                                <p class="card-text">dni {{persona.dni}}</p>
+                                <a href="#" class="card-link">{{persona.correo}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+            </div>
+            
+            </div>
         </div>
     </div>
+    <p v-show="mostrar" class="alert alert-warning">
+        Se debe de ingresar minimo 3 caracteres en el nombre y apellido.
+     </p>
 
 </div>
 
 </html>
-
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script>
     new Vue({
         el: '#app',
         data: {
             criterioDeBusqueda: '',
+            criterioDeBusqueda2: '',
             //Aquí, en este array es donde tienen que agregar su información
             personas: [
                 {
@@ -47,6 +75,18 @@
                     apellido: "Sanchez",
                     correo: "danielsanchez68@hotmail.com",
                     dni: "20442873"
+                },
+                {
+                    nombre: "Pedro",
+                    apellido: "Sanchez",
+                    correo: "pedrosanchez@aol.com",
+                    dni: "93222000"
+                },
+                {
+                    nombre: "Ignacio",
+                    apellido: "Negretti Dietrich",
+                    correo: "ignacionegretti@hotmail.com",
+                    dni: "35111025"
                 },
                 {
                     nombre: "...",
@@ -63,12 +103,25 @@
                     let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
                     return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda.toLowerCase())
                 });
+            },
+            personasFiltradasXDni() {
+                return this.personas.filter((persona) => {
+                    let registroCompleto = `${persona.nombre} ${persona.apellido} ${persona.dni} ${persona.correo}`
+                    return registroCompleto.toLowerCase().includes(this.criterioDeBusqueda2.toLowerCase())
+                });
+
+            },
+            mostrar(){
+                return this.criterioDeBusqueda.length<3 || this.personasFiltradas.length<=0
             }
+
+
         },
         methods: {
             getNombreCompleto(persona) {
                 return `${persona.nombre} ${persona.apellido}`
-            }
+            },
         }
     });
+
 </script>
